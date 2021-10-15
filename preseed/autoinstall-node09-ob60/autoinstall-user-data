@@ -1,0 +1,54 @@
+#cloud-config
+autoinstall:
+  apt:
+    geoip: true
+    preserve_sources_list: false
+    primary:
+    - arches: [amd64, i386]
+      uri: http://hu.archive.ubuntu.com/ubuntu
+    - arches: [default]
+      uri: http://ports.ubuntu.com/ubuntu-ports
+  identity: {hostname: node09, password: $6$ZjJAux1TG4MfQdtN$3m4GAiCX2xn7EpsUTYd1o2LSwxFVRRo7uoTLfsF5NN1nRtIk.Y70Led0JaTGlDFS.rpjUKltCP.SmI0WWUwDd.,
+    realname: ubuntu, username: ubuntu}
+  keyboard: {layout: us, toggle: null, variant: ''}
+  locale: en_US.UTF-8
+  network:
+    ethernets:
+      enp0s25:
+        critical: true
+        dhcp-identifier: mac
+        dhcp4: true
+        nameservers:
+          addresses: [172.27.12.62]
+          search: [maas., ob12.eu-central.canonical.lab.]
+      enx8cae4cfd9f14: {dhcp4: true}
+    version: 2
+  ssh:
+    allow-pw: true
+    authorized-keys: ['ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDfWBD8hVAsavkfLH9gu4TtpkzNru5DH+jTACcDj1woxBtCVryBykNzNz1ZM4jTFCphjg5WWVKWxWR1AmMN7q+9Y1hZ9MeZvXyMVKiALAfz+8JZU/6sjkO5mMxiLXGtb7N5sjhUNq8tPJ8PsAEpy8UDzO5QkM8AvfMAn1Snu5pPr7qiGq6nzTRaJ1vv3V6m6i6CgnHQPxEEO7etdsAKwuzJsqEYqS6y3BIJcBp2GeoYgnq20qJxAnegffiGyL2d34CDdFr9Nw0stT4f8bEPT6SjtnozgIuS5jorcXkiUqb/rdeiiQHxutQsZH37ODRdqcAGmv7f8mYzTeGc2TY2bya/OeoHULexpRi14BwwMKi3onGWsrbiYPEzdDPY4JCsKAD3bWUJ2AiOB7lq94D3UDpd9anbJiN+3/dpENyXd+IIPCxCoyOHWTgjGwQ932SpjHm6ObyfbztJoQo9FcprRN0mfcry8pCng4qZcnktTjIbnRYddCyrauD4d59bGXuDCOM1FLxTd24p0J+AKpB6GmRyYcW0q1Hz7u+jsEqMjJB2MnQEvvqu/o9g2X4LsdBB9n65vS6EbtwO/0+oJWW87JSeg4sAjesefvgFGrRFJXsfhasGAVeejLXGqmGppJRKlUxYTlqCv7NZ7tCFP+vmopgr1r0yr3GIgGLRNaObVY2/zw==
+        gmeszaros-2019-work # ssh-import-id lp:gabor.meszaros']
+    install-server: true
+  storage:
+    config:
+    - {ptable: gpt, serial: KINGSTON_SV300S37A120G_50026B775A0219F8, wwn: '0x50026b775a0219f8',
+      path: /dev/sda, wipe: superblock, preserve: false, name: '', grub_device: true,
+      type: disk, id: disk-sda}
+    - {device: disk-sda, size: 1048576, flag: bios_grub, number: 1, preserve: false,
+      grub_device: false, type: partition, id: partition-0}
+    - {device: disk-sda, size: 1073741824, wipe: superblock, flag: '', number: 2,
+      preserve: false, grub_device: false, type: partition, id: partition-1}
+    - {fstype: ext4, volume: partition-1, preserve: false, type: format, id: format-0}
+    - {device: disk-sda, size: 118956752896, wipe: superblock, flag: '', number: 3,
+      preserve: false, grub_device: false, type: partition, id: partition-2}
+    - name: ubuntu-vg
+      devices: [partition-2]
+      preserve: false
+      type: lvm_volgroup
+      id: lvm_volgroup-0
+    - {name: ubuntu-lv, volgroup: lvm_volgroup-0, size: 59477327872B, wipe: superblock,
+      preserve: false, type: lvm_partition, id: lvm_partition-0}
+    - {fstype: ext4, volume: lvm_partition-0, preserve: false, type: format, id: format-1}
+    - {path: /, device: format-1, type: mount, id: mount-1}
+    - {path: /boot, device: format-0, type: mount, id: mount-0}
+  updates: security
+  version: 1

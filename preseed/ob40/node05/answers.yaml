@@ -1,0 +1,60 @@
+#cloud-config
+# set password to r00tme on the installer environment
+chpasswd:
+    expire: false
+    list:
+        - installer:$6$.c38i4RIqZeF4RtR$hRu2RFep/.6DziHLnRqGOEImb15JT2i.K/F9ojBkK/79zqY30Ll2/xx6QClQfdelLe.ZjpeVYfE8xBBcyLspa/
+ssh_authorized_keys:
+    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDfWBD8hVAsavkfLH9gu4TtpkzNru5DH+jTACcDj1woxBtCVryBykNzNz1ZM4jTFCphjg5WWVKWxWR1AmMN7q+9Y1hZ9MeZvXyMVKiALAfz+8JZU/6sjkO5mMxiLXGtb7N5sjhUNq8tPJ8PsAEpy8UDzO5QkM8AvfMAn1Snu5pPr7qiGq6nzTRaJ1vv3V6m6i6CgnHQPxEEO7etdsAKwuzJsqEYqS6y3BIJcBp2GeoYgnq20qJxAnegffiGyL2d34CDdFr9Nw0stT4f8bEPT6SjtnozgIuS5jorcXkiUqb/rdeiiQHxutQsZH37ODRdqcAGmv7f8mYzTeGc2TY2bya/OeoHULexpRi14BwwMKi3onGWsrbiYPEzdDPY4JCsKAD3bWUJ2AiOB7lq94D3UDpd9anbJiN+3/dpENyXd+IIPCxCoyOHWTgjGwQ932SpjHm6ObyfbztJoQo9FcprRN0mfcry8pCng4qZcnktTjIbnRYddCyrauD4d59bGXuDCOM1FLxTd24p0J+AKpB6GmRyYcW0q1Hz7u+jsEqMjJB2MnQEvvqu/o9g2X4LsdBB9n65vS6EbtwO/0+oJWW87JSeg4sAjesefvgFGrRFJXsfhasGAVeejLXGqmGppJRKlUxYTlqCv7NZ7tCFP+vmopgr1r0yr3GIgGLRNaObVY2/zw== installer
+autoinstall:
+  apt:
+    geoip: true
+    preserve_sources_list: false
+    primary:
+    - arches: [amd64, i386]
+      uri: http://archive.ubuntu.com/ubuntu
+    - arches: [default]
+      uri: http://ports.ubuntu.com/ubuntu-ports
+  identity:
+    hostname: ob40-node05
+    password: $6$KStSnSVbghVipkI/$0uJjLfesTpunTP/F9QRo/71o9qEd2LyhSwrUBsF3ChPHQq6lYVNjbkJdJqdwupbp4LM0dqvYee1UbRLhxNnCb1
+    username: ubuntu
+  network:
+    ethernets:
+      enp0s25:
+        critical: true
+        dhcp-identifier: mac
+        dhcp4: true
+    version: 2
+  ssh:
+    allow-pw: true
+    authorized-keys: []
+    install-server: true
+  ### Storage Config
+  storage:
+    swap:
+      size: 0
+  #  config:
+  #    # Boot Disk
+  #    - id: sda
+  #      disk: 0
+  #      type: disk
+  #      ptable: gpt
+  #      boot: true
+  #      wipe: superblock
+  early-commands:
+    - for vg in `sudo vgs -o vg_name --no-headings`;do sudo  vgrename --force $vg ${vg}_to_be_deleted; sudo  vgremove --force ${vg}_to_be_deleted; done || true
+    - for pv in `sudo pvs -o pv_name --no-headings`;do sudo pvremove --force $pv; done || true
+    - for b in /dev/bcache*;do sudo wipefs -af $b; done || true
+    - for i in /sys/fs/bcache/*/stop;do echo 1 | sudo tee $i; done || true
+    - for d in /dev/md?*;do sudo wipefs -af $d; sudo mdadm --stop $d; done || true
+    - bash -c "shopt -s nullglob; for i in \$(ls /dev/sd* /dev/nvme*n*|sort -r);do sudo  wipefs -af \$i; sudo dd if=/dev/zero of=\$i bs=1M count=10; done" || true
+    # skip zero out full drive
+    # - for i in /dev/sd?;do  sudo   dd if=/dev/zero of=$i bs=1M & done || true
+    #- disown # do not wait forever for the disks
+    #- for i in /dev/nvme?n?;do sudo  dd if=/dev/zero of=$i bs=1M & done || true
+    - wait # wait for nvmes
+    #- echo "TODO: properly handle errors, some might fail expectedly, if there is no bcache, etc."
+  updates: security
+  version: 1
+

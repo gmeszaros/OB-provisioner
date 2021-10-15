@@ -1,0 +1,37 @@
+#cloud-config
+autoinstall:
+  apt:
+    geoip: true
+    preserve_sources_list: false
+    primary:
+    - arches: [amd64, i386]
+      uri: http://archive.ubuntu.com/ubuntu
+    - arches: [default]
+      uri: http://ports.ubuntu.com/ubuntu-ports
+  identity:
+    hostname: ob40-node02
+    password: $6$KStSnSVbghVipkI/$0uJjLfesTpunTP/F9QRo/71o9qEd2LyhSwrUBsF3ChPHQq6lYVNjbkJdJqdwupbp4LM0dqvYee1UbRLhxNnCb1
+    username: ubuntu
+  ### Storage Config
+  storage:
+    swap:
+      size: 0
+  #  config:
+  #    # Boot Disk
+  #    - id: sda
+  #      disk: 0
+  #      type: disk
+  #      ptable: gpt
+  #      boot: true
+  #      wipe: superblock
+  early-commands:
+    - sudo wipefs -a /dev/sda
+    - sudo wipefs -a /dev/sdb
+    - sudo wipefs -a /dev/sdc
+  ssh:
+    allow-pw: true
+    authorized-keys: []
+    install-server: true
+  updates: security
+  version: 1
+

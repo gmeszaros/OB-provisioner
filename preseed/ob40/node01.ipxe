@@ -1,0 +1,10 @@
+#!ipxe
+set ubuntu http://172.27.12.10:3003
+set ubuntu_edge http://172.27.40.60:3003
+# needs ifconf to get URL resolution and networking
+ifconf
+initrd ${ubuntu_edge}/initrd
+kernel ${ubuntu_edge}/vmlinuz
+imgargs vmlinuz root=/dev/ram0 ip=dhcp url=${ubuntu_edge}/ubuntu-20.04.3-live-server-amd64.iso cloud-config-url=/dev/null ip6=off apparmor=0 --- vga=normal nomodeset autoinstall ds=nocloud-net;s=${ubuntu}/preseed/ob40/node01/
+ 
+boot

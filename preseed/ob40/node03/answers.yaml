@@ -1,0 +1,28 @@
+#cloud-config
+autoinstall:
+  apt:
+    geoip: true
+    preserve_sources_list: false
+    primary:
+    - arches: [amd64, i386]
+      uri: http://archive.ubuntu.com/ubuntu
+    - arches: [default]
+      uri: http://ports.ubuntu.com/ubuntu-ports
+  identity: 
+    hostname: ob40-node03
+    password: $6$ZjJAux1TG4MfQdtN$3m4GAiCX2xn7EpsUTYd1o2LSwxFVRRo7uoTLfsF5NN1nRtIk.Y70Led0JaTGlDFS.rpjUKltCP.SmI0WWUwDd.
+    username: ubuntu
+  network:
+    ethernets:
+      enp0s25:
+        critical: true
+        dhcp-identifier: mac
+        dhcp4: true
+    version: 2
+  ssh:
+    allow-pw: true
+    authorized-keys: []
+    install-server: true
+  updates: security
+  version: 1
+

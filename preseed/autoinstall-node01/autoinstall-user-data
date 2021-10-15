@@ -1,0 +1,33 @@
+#cloud-config
+autoinstall:
+  apt:
+    geoip: true
+    preserve_sources_list: false
+    primary:
+    - arches: [amd64, i386]
+      uri: http://archive.ubuntu.com/ubuntu
+    - arches: [default]
+      uri: http://ports.ubuntu.com/ubuntu-ports
+  identity: {hostname: node01, password: $6$ZjJAux1TG4MfQdtN$3m4GAiCX2xn7EpsUTYd1o2LSwxFVRRo7uoTLfsF5NN1nRtIk.Y70Led0JaTGlDFS.rpjUKltCP.SmI0WWUwDd.,
+    realname: ubuntu, username: ubuntu}
+  keyboard: {layout: us, toggle: null, variant: ''}
+  locale: en_US.UTF-8
+  network:
+    ethernets:
+      enp0s25:
+        critical: true
+        dhcp-identifier: mac
+        dhcp4: true
+        nameservers:
+          addresses: [172.27.104.254]
+          search: [maas., ob104.eu-central.canonical.lab.]
+      enx8cae4cfd9f14: {dhcp4: true}
+    version: 2
+  ssh:
+    allow-pw: true
+    authorized-keys: 
+      - 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDfWBD8hVAsavkfLH9gu4TtpkzNru5DH+jTACcDj1woxBtCVryBykNzNz1ZM4jTFCphjg5WWVKWxWR1AmMN7q+9Y1hZ9MeZvXyMVKiALAfz+8JZU/6sjkO5mMxiLXGtb7N5sjhUNq8tPJ8PsAEpy8UDzO5QkM8AvfMAn1Snu5pPr7qiGq6nzTRaJ1vv3V6m6i6CgnHQPxEEO7etdsAKwuzJsqEYqS6y3BIJcBp2GeoYgnq20qJxAnegffiGyL2d34CDdFr9Nw0stT4f8bEPT6SjtnozgIuS5jorcXkiUqb/rdeiiQHxutQsZH37ODRdqcAGmv7f8mYzTeGc2TY2bya/OeoHULexpRi14BwwMKi3onGWsrbiYPEzdDPY4JCsKAD3bWUJ2AiOB7lq94D3UDpd9anbJiN+3/dpENyXd+IIPCxCoyOHWTgjGwQ932SpjHm6ObyfbztJoQo9FcprRN0mfcry8pCng4qZcnktTjIbnRYddCyrauD4d59bGXuDCOM1FLxTd24p0J+AKpB6GmRyYcW0q1Hz7u+jsEqMjJB2MnQEvvqu/o9g2X4LsdBB9n65vS6EbtwO/0+oJWW87JSeg4sAjesefvgFGrRFJXsfhasGAVeejLXGqmGppJRKlUxYTlqCv7NZ7tCFP+vmopgr1r0yr3GIgGLRNaObVY2/zw== gmeszaros-2019-work # ssh-import-id lp:gabor.meszaros'
+      - 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDBD16zRJ8kpb0kBfaUu8BLQdt2JWgtZ08T1WetXIyyKEQeTuJjh27HkVakOoN3w551UBcoPDqUlw6zu2SWkN4JMwLEyyQWEyZukycYJHLkBDw2F6ICnKCLqOsKJghSelsr/SRdApXQBla7xQne3bJ+lgY0jO38qP91A5zgBGhcbfml7cOc+HtU+cxd1xwNsaAogOBx9MkD5ju4XHZ7PSDgE2agIm8XCW2liVoHiAUfbMfIlCnTnzJi4g6pMxpPY2X+qyhvfzfkF9CU+BYsUJgn1RYG9IgiPAW+TNUCA7at9zLKvAsWoOcTXWD2wjojzR/VELQQVmi5RYRxGqLMpZ7n2NDEHUfHOjqfbj2Eipaawoc8ESOnqL7o02Xb5CpPy/bKrNvZ6ak/mMxMU6iWaFWZhqLhGaZqwcczbTDxPyHGPty0yYrA12WCmqon0JbWEZctxPK7U2RJZtj0wts5UqveffjBGF4hGrjeFDXLAvaMyzbUV4wdV1G91z3qpkkFYvaZ4G/JyD3ZaPMqJcdulG7lgcN/JbqEluvmU/1Bjo5470jk3YeWOUgzDejEjnofwQbfCdfdy7ItEDOTlL0PVUF1PRGtbgyD6jD76GCjDmps1PbULrIVAmgk7LIEh5Im56l613SzuzFULm28J94r5eTjAAo3NFhMwQGrbBLV33T4hw== sergiomanso@sergiomanso-laptop # ssh-import-id lp:sergiomanso'
+    install-server: true
+  updates: security
+  version: 1
