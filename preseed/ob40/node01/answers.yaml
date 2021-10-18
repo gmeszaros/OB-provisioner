@@ -15,7 +15,7 @@ autoinstall:
       uri: http://archive.ubuntu.com/ubuntu
     - arches: [default]
       uri: http://ports.ubuntu.com/ubuntu-ports
-  identity: 
+  identity:
     hostname: ob40-node01
     password: $6$KStSnSVbghVipkI/$0uJjLfesTpunTP/F9QRo/71o9qEd2LyhSwrUBsF3ChPHQq6lYVNjbkJdJqdwupbp4LM0dqvYee1UbRLhxNnCb1
     username: ubuntu
